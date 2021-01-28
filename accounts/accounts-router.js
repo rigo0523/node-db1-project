@@ -1,48 +1,32 @@
 const express = require("express");
-const { restart } = require("nodemon");
-const { orWhereNotExists } = require("../data/dbConfig");
+const router = express.Router();
+const { getById, checkPostData } = require("../middleware/middleware-stack");
 
 //database access using knex
 const db = require("../data/dbConfig");
 
-const router = express.Router();
-
-//GET /api/accounts/
-router.get("/", async (req, res, next) => {
-  const sql = await db("accounts").toString();
-  console.log("sql", sql);
-  try {
-    const account = await db("accounts");
-    account
-      ? res.status(200).json({ data: account })
-      : res.status(404).json({ message: "account list not found" });
-  } catch (err) {
-    next(error);
-  }
+//GET /api/accounts/  --- promise based
+router.get("/", (req, res, next) => {
+  db("accounts")
+    .then((account) => {
+      console.log("acount-->", account);
+      account
+        ? res.status(200).json(account)
+        : res.status(404).json({ message: "404 error, accounts not found" });
+    })
+    .catch((err) => next(err));
 });
 
-//GET BY ID /api/accounts/:id
-router.get("/:id", async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    let account = await db("accounts").where({ id: id }).first();
-    account
-      ? res.status(200).json({ data: account })
-      : res.status(404).json({ message: `can't find id #${id}` });
-  } catch (err) {
-    next(err);
-  }
+//GET BY ID /api/accounts/:id --- async based middleware
+router.get("/:id", getById(), async (req, res, next) => {
+  res.status(200).json(req.account);
 });
 
 //POST /api/accounts/ Make sure it posts as an object, not as an array with an object
-router.post("/", async (req, res, next) => {
+router.post("/", checkPostData(), async (req, res, next) => {
   const name = req.body;
   const budget = req.body;
-
-  if (!name || !budget) {
-    return res.status(400).json({ message: "name OR budget input missing" });
-  }
-
+  console.log(name, budget);
   try {
     const account = await db("accounts")
       .insert(name, budget, "id")

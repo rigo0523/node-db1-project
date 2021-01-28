@@ -1,14 +1,20 @@
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+
+//server export to index
 const server = express();
 
-//routers
+//import routerss
 const welcomeRouter = require("../welcome/welcome-router");
 const accountsRouter = require("../accounts/accounts-router");
 
-//middleware
+//global middleware
+server.use(cors());
+server.use(helmet());
 server.use(express.json());
 
-//welcome and accounts routers
+//server endpoints ----->
 server.use("/", welcomeRouter);
 server.use("/api/accounts", accountsRouter);
 
