@@ -26,12 +26,11 @@ function getById(id) {
 //check post data for name and budge
 function checkPostData() {
   return (req, res, next) => {
-    const name = req.body;
-    const budget = req.body;
-    if (!name || !budget) {
+    const { name, budget, user_id } = req.body;
+    if (!name || !budget || !user_id) {
       return res
         .status(400)
-        .json({ message: "name OR budget input missing.." });
+        .json({ message: "name, user_id OR budget input missing.." });
     }
     next();
   };
