@@ -2,6 +2,7 @@ const Users = require("./users-helper");
 
 module.exports = {
   checkUserID,
+  checkPostData,
 };
 
 function checkUserID() {
@@ -17,5 +18,19 @@ function checkUserID() {
         }
       })
       .catch((err) => next(err));
+  };
+}
+
+//check post data for name and budge
+function checkPostData() {
+  return (req, res, next) => {
+    const { name, age, location } = req.body;
+
+    if (!name || !age || !location) {
+      return res
+        .status(400)
+        .json({ message: "name, location OR budget input missing.." });
+    }
+    next();
   };
 }

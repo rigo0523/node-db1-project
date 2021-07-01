@@ -8,6 +8,7 @@ const server = express();
 //import routerss
 const welcomeRouter = require("../welcome/welcome-router");
 const accountsRouter = require("../accounts/accounts-router");
+const usersRouter = require("../users/users-router");
 
 //global middleware
 server.use(cors());
@@ -16,6 +17,7 @@ server.use(express.json());
 
 //server endpoints ----->
 server.use("/", welcomeRouter);
+server.use("/api/users", usersRouter);
 server.use("/api/accounts", accountsRouter);
 
 //middleware for CATCH ERROR on all endpoints of /api/accounts
