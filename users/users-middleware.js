@@ -29,7 +29,7 @@ function checkPostData() {
     if (!name || !age || !location) {
       return res
         .status(400)
-        .json({ message: "name, location OR budget input missing.." });
+        .json({ message: "name, location OR budget input missing..." });
     }
     next();
   };
