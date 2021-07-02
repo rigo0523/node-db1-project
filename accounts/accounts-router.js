@@ -52,15 +52,16 @@ router.post("/", checkPostData(), (req, res, next) => {
 //UPDATE /api/accounts/:id
 router.put("/:id", async (req, res, next) => {
   const { id } = req.params;
-  const { name } = req.body;
-  const { budget } = req.body;
+  const { name, budget, user_id } = req.body;
 
-  if (!name || !budget) {
+  const body = req.body;
+
+  if (!name || !budget || !user_id) {
     return res.status(400).json({ message: "name OR budget input missing" });
   }
 
   try {
-    await db("accounts").update(name, budget).where({ id: id });
+    await db("accounts").update(body).where({ id: id });
 
     const account = await db("accounts").where({ id }).first();
     account
